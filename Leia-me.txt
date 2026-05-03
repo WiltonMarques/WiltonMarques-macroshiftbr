@@ -1,0 +1,11 @@
+Como Operar a Ferramenta agora:
+No terminal, você agora dá os comandos de forma isolada:
+
+Para atualizar apenas o IBGE:
+python macroshift_data_ingestion.py --ibge
+
+Para processar o CAGED (exemplo de Outubro de 2023):
+python macroshift_data_ingestion.py --caged --ano 2023 --mes 10
+
+Para processar outro mês do CAGED sem mexer no código:
+python macroshift_data_ingestion.py --caged --ano 2024 --mes 1

@@ -1,0 +1,6 @@
+{
+    "host": "localhost",
+    "port": "5432",
+    "user": "seu_usuario_aqui",
+    "password": "sua_senha_aqui"
+}
