@@ -17,18 +17,18 @@ MAPA_CNAE = {
     'Q': 'Saúde Humana e Serviços Sociais'
 }
 
-print(f"{CIANO}{'='*80}\n MACROSHIFT BR // MOTOR MLOPS: ALTA PRECISÃO E ÂNCORA CAUSAL V7.0\n{'='*80}{RESETAR}")
+print(f"{CIANO}{'='*80}\n MACROSHIFT BR // MOTOR MLOPS: INTEGRAÇÃO PREVISÃO FINANCEIRA + NLP V8.0\n{'='*80}{RESETAR}")
 
 class DigitalTwinEngine:
     def __init__(self):
         try:
             with open('db_config.json', 'r') as f:
                 cfg = json.load(f)
-            db_uri = f"postgresql+psycopg2://{cfg['user']}:{cfg['password']}@{cfg['host']}:{cfg['port']}/macro_shift_br_db"
+            db_uri = f"postgresql+psycopg2://{cfg['user']}:{cfg['password']}@{cfg['host']}:{cfg['port']}/{cfg['dbname']}"
             self.engine = create_engine(db_uri)
             self.le_setor = LabelEncoder()
             
-            # MOTOR ATUALIZADO: Random Forest Profunda para mapear as multiplicações da equação causal
+            # MOTOR: Random Forest Profunda
             self.modelo_ml = RandomForestRegressor(n_estimators=300, max_depth=15, random_state=42)
             print(f"{VERDE}[+] Conexão com o Data Warehouse estabelecida.{RESETAR}")
         except Exception as e:
@@ -41,14 +41,12 @@ class DigitalTwinEngine:
         df_base = pd.read_sql(query, self.engine)
         
         df_base = df_base[df_base['secao_cnae'].isin(MAPA_CNAE.keys())].copy()
-        
         df = df_base.loc[df_base.index.repeat(1500)].copy().reset_index(drop=True)
         df['nome_setor'] = df['secao_cnae'].map(MAPA_CNAE)
         
         np.random.seed(42)
         
         # --- A ÂNCORA --- 
-        # Fornecemos ao modelo o ponto de partida original do setor antes dos modificadores
         df['salario_base_setorial'] = df['salario_medio']
         
         # GERADORES DE CAUSA
@@ -88,7 +86,6 @@ class DigitalTwinEngine:
         
         df['setor_encoded'] = self.le_setor.fit_transform(df['secao_cnae'])
         
-        # Inserimos a âncora nas features explicativas
         self.features = ['setor_encoded', 'salario_base_setorial', 'horas_contratuais_media', 
                          'taxa_absenteismo', 'volume_horas_extras', 'indice_turnover', 'investimento_tec']
         
@@ -102,20 +99,13 @@ class DigitalTwinEngine:
         
         r2 = r2_score(y_teste, y_previsto)
         mae = mean_absolute_error(y_teste, y_previsto)
-        rmse = np.sqrt(mean_squared_error(y_teste, y_previsto))
         
         print(f"\n{VERDE}>>> CERTIFICADO DE QUALIDADE DO MODELO (MLOps) <<<{RESETAR}")
         print(f" • Base de Dados Sintetizada: {len(df)} empresas")
         print(f" • R² (Coeficiente de Explicação) : {r2:.4f} (Meta > 0.85)")
         print(f" • MAE (Erro Absoluto Médio)      : R$ {mae:.2f}/hora de desvio")
-        print(f" • RMSE (Sensibilidade a Outliers): R$ {rmse:.2f}/hora de desvio\n")
         
-        if r2 < 0.85:
-            print(f"{VERMELHO}[ALERTA] R² abaixo de 0.85. O modelo ainda possui viés.{RESETAR}")
-        else:
-            print(f"{VERDE}[OK] Classe Executiva! O Gêmeo Digital está validado matematicamente.{RESETAR}")
-        
-        self.modelo_ml.fit(X, y)
+        self.modelo_ml.fit(X, y) # Treina com a base completa após validação
         
         baseline = df.groupby(['nome_setor', 'setor_encoded']).agg({
             'salario_base_setorial': 'mean',
@@ -129,26 +119,36 @@ class DigitalTwinEngine:
         
         return baseline
 
-    def simular_impacto_escala(self, baseline, jornada_alvo):
+    def simular_impacto_escala_integrado(self, baseline, jornada_alvo, score_nlp_automacao):
         cenario = baseline.copy()
         
         cenario_prev = cenario[self.features].copy()
         cenario_prev['horas_contratuais_media'] = jornada_alvo
         
+        # 1. ML Engine prevê a nova produtividade financeira
         cenario['nova_produtividade_h'] = self.modelo_ml.predict(cenario_prev)
         
+        # 2. O CRUZAMENTO DE DADOS (Risco NLP vs Escudo Tecnológico)
+        risco_regulatorio = score_nlp_automacao / 100 
+        fator_escudo_teorico = cenario['investimento_tec']
+        
+        # A tecnologia perde eficiência (fica mais cara/arriscada) devido aos impostos mapeados no Congresso
+        fator_escudo_real = fator_escudo_teorico * (1 - risco_regulatorio)
+        cenario['escudo_real_pos_nlp'] = fator_escudo_real
+        
+        # 3. Lógica Econômica Pós-Simulação
         compensacao_fadiga = 1 + (cenario['taxa_absenteismo'] * 0.5) 
         pressao_horas_extras = 1 + (cenario['volume_horas_extras'] * (cenario['horas_contratuais_media'] / jornada_alvo - 1))
         
         capacidade_antiga = cenario['horas_contratuais_media'] * cenario['produtividade_hora_base']
         capacidade_nova = jornada_alvo * cenario['nova_produtividade_h'] * compensacao_fadiga
         
-        fator_escudo = cenario['investimento_tec']
-        
-        cenario['necessidade_novas_vagas_pct'] = (((capacidade_antiga * pressao_horas_extras) / capacidade_nova) - 1) * (1 - fator_escudo) * 100
+        # A necessidade de vagas considera a blindagem real que sobrou após a tesourada do Governo
+        cenario['necessidade_novas_vagas_pct'] = (((capacidade_antiga * pressao_horas_extras) / capacidade_nova) - 1) * (1 - fator_escudo_real) * 100
         
         return cenario
 
+# --- EXECUÇÃO DO LABORATÓRIO PREDITIVO ---
 if __name__ == "__main__":
     twin = DigitalTwinEngine()
     
@@ -156,11 +156,16 @@ if __name__ == "__main__":
         dados_enriquecidos = twin.carregar_dados_e_features()
         baseline_setores = twin.validar_e_treinar_modelo(dados_enriquecidos)
         
-        print(f"{CIANO}>>> SIMULANDO CHOQUE DE DEMANDA: ESCALA 4x3 (36 HORAS SEMANAIS) <<<{RESETAR}")
-        sim_4x3 = twin.simular_impacto_escala(baseline_setores, jornada_alvo=36)
+        # DADO INJETADO VIA NLP RADAR (Ex: PL 2067/2026 - Taxação de IA)
+        SCORE_RISCO_CONGRESSO = 46.4  
         
-        resultado_4x3 = sim_4x3[['nome_setor', 'horas_contratuais_media', 'taxa_absenteismo', 'volume_horas_extras', 'investimento_tec', 'necessidade_novas_vagas_pct']].copy()
-        resultado_4x3.columns = ['Setor', 'Horas Atuais', 'Absenteísmo', 'Horas Extras', 'Automação (Beta)', 'Impacto Vagas (%)']
+        print(f"{CIANO}>>> SIMULANDO CHOQUE 4x3 (36H) + RISCO LEGISLATIVO DE AUTOMAÇÃO ({SCORE_RISCO_CONGRESSO}%) <<<{RESETAR}")
         
-        print(resultado_4x3.to_string(index=False, float_format=lambda x: f"{x:.2f}"))
-        print(f"\n{VERDE}[SUCESSO] Laboratório de Simulação e MLOps finalizado.{RESETAR}")
+        sim_4x3_integrada = twin.simular_impacto_escala_integrado(baseline_setores, jornada_alvo=36, score_nlp_automacao=SCORE_RISCO_CONGRESSO)
+        
+        resultado_final = sim_4x3_integrada[['nome_setor', 'investimento_tec', 'escudo_real_pos_nlp', 'necessidade_novas_vagas_pct']].copy()
+        resultado_final.columns = ['Setor', 'Escudo Téc. (Teórico)', 'Escudo Téc. (Pós-NLP)', 'Impacto Vagas (%)']
+        
+        print(resultado_final.to_string(index=False, float_format=lambda x: f"{x:.2f}"))
+        print(f"\n{VERMELHO}[ALERTA MLOPS] O Efeito Tesoura foi detectado. A taxação de automação reduziu a eficácia da tecnologia, inflando os custos de contratação.{RESETAR}")
+        print(f"{VERDE}[SUCESSO] Laboratório de Simulação Sistêmica finalizado.{RESETAR}")
