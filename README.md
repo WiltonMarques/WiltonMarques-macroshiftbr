@@ -75,6 +75,36 @@ Execute o motor preditivo para visualizar o impacto do choque de jornada na econ
 
 Bash
 python macroshift_ml_engine.py
+
+
+
+# 📊 MacroShift BR: Integração Sistêmica (ML + NLP) v8.0
+
+O **MacroShift BR** evoluiu de um simulador de jornada para um ecossistema de inteligência legislativa e econômica. Esta versão marca a integração do **Motor Preditivo (Random Forest)** com o **Radar de Similaridade por Cosseno (NLP)**.
+
+## 🧠 Arquitetura de Integração: O "Efeito Tesoura"
+
+A versão 8.0 introduz o conceito de **Risco Regulatório Dinâmico**. O sistema agora opera em duas frentes síncronas:
+
+1. **Camada de Percepção (NLP Radar):** - Realiza o *scraping* e enriquecimento em massa de projetos de lei via API da Câmara.
+   - Utiliza **TF-IDF Vectorization** e **Cosine Similarity** para identificar ameaças tributárias à tecnologia (ex: PL 2067/2026).
+   - Gera um `Macro-Score` (0-100) de pressão legislativa sobre a automação.
+
+2. **Camada de Projeção (ML Engine):**
+   - Executa uma **Random Forest Regressor** (V8.0) com 300 estimadores e profundidade 15.
+   - Recebe o `Macro-Score` como um parâmetro de entrada que atua como um multiplicador negativo sobre a variável `investimento_tec`.
+   - Simula o impacto real nas vagas, considerando que a automação pode ser tributada, reduzindo seu poder de absorção de choque.
+
+## 🛠️ Novos Scripts Incluídos
+- `macroshift_nlp_radar.py`: O "cérebro" léxico focado em pautas laborais e automação.
+- `macroshift_ml_engine.py (v8.0)`: O motor financeiro atualizado com o gatilho de risco regulatório.
+- `ingestao_camara.py (v4.0)`: Pipeline de Big Data otimizado para varredura histórica (2024-2026).
+
+## 📈 Resultados Obtidos
+Ao integrar um Risco Legislativo de **46.4%** (mapeado pelo NLP), o simulador detectou que setores altamente dependentes de tecnologia para compensar a escala 4x3 sofrerão um aumento de **12% a 18%** na necessidade de contratação imprevista, devido à neutralização do "escudo tecnológico" por novas cargas tributárias.
+
+---
+**Wilton Marques do Amaral** *Cientista de Dados | Especialista Legislativo*
 Autor: Wilton Marques do Amaral
 
 Desenvolvido como caso de estudo prático unindo Engenharia de Dados, Economia e Inteligência Artificial.
