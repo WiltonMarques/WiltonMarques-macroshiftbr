@@ -69,4 +69,4 @@ A versão 8.0 introduz o conceito de **Risco Regulatório Dinâmico**. O sistema
 Ao integrar um Risco Legislativo de **46.4%** (mapeado pelo NLP), o simulador detectou que setores altamente dependentes de tecnologia para compensar a escala 4x3 sofrerão um aumento de **12% a 18%** na necessidade de contratação imprevista, devido à neutralização do "escudo tecnológico" por novas cargas tributárias.
 
 ---
-**Wilton Marques do Amaral** *Cientista de Dados | Especialista Legislativo*
+**Wilton Marques do Amaral** *Cientista de Dados | Especialista*
