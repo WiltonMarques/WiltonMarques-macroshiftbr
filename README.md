@@ -30,18 +30,18 @@ Construir um simulador econômico não é apenas plugar dados em uma biblioteca.
 ### 🟢 Fase 4: A Âncora Causal e o Domínio Determinístico (R²: 0.997)
 * **O Ajuste Final:** Realizamos um *Feature Selection* e injetamos o `salario_base_setorial` explicitamente no treino, permitindo árvores mais profundas (`max_depth=15`).
 * **O Veredito do Gêmeo Digital:** O R² atingiu **99,7%** com um Erro Absoluto Médio (MAE) de apenas R$ 1,32. 
-### 💡 **Nota Técnica:** Em Machine Learning clássico, 99.7% indicaria *Data Leakage*. No entanto, em um **Motor de Simulação (Digital Twin)**, esse é o estado da arte. Isso prova que o modelo fez engenharia reversa perfeita das leis causais de produtividade que embutimos. Ele não "alucina"; age de forma estritamente determinística, aplicando as regras econômicas com precisão matemática para projetar as vagas.
+> 💡 **Nota Técnica:** Em Machine Learning clássico, 99.7% indicaria *Data Leakage*. No entanto, em um **Motor de Simulação (Digital Twin)**, esse é o estado da arte. Isso prova que o modelo fez engenharia reversa perfeita das leis causais de produtividade que embutimos. Ele não "alucina"; age de forma estritamente determinística, aplicando as regras econômicas com precisão matemática para projetar as vagas.
 
 ---
 
-### 🛠️ Arquitetura do Sistema
+## 🛠️ Arquitetura do Sistema
 
-## O projeto é modular e dividido em três camadas principais:
+O projeto é modular e dividido em três camadas principais:
 
-# 1. **`setup_macroshift_db.py` (Infraestrutura):** Cria o Data Warehouse `macro_shift_br_db` no PostgreSQL e as tabelas `tb_macro_ibge` e `tb_micro_caged`.
-# 2. **`macroshift_data_ingestion.py` (ETL de Big Data):** * **IBGE:** Consome a API do SIDRA via REST, normaliza as chaves temporais e cruza métricas de horas e renda.
+1. **`setup_macroshift_db.py` (Infraestrutura):** Cria o Data Warehouse `macro_shift_br_db` no PostgreSQL e as tabelas `tb_macro_ibge` e `tb_micro_caged`.
+2. **`macroshift_data_ingestion.py` (ETL de Big Data):** * **IBGE:** Consome a API do SIDRA via REST, normaliza as chaves temporais e cruza métricas de horas e renda.
    * **CAGED:** Acessa o FTP do Governo Federal, faz download e descompactação de arquivos `.7z` massivos na memória e aplica a técnica de *Chunking* (100k linhas por lote) no Pandas para não estourar a memória RAM.
-# 3. **`macroshift_ml_engine.py` (Cérebro Preditivo):** Extrai os dados do DW, aplica o *Data Augmentation* (Bootstrapping), treina o `RandomForestRegressor`, emite o certificado de qualidade (Out-of-Time Validation) e roda os cenários 5x2 e 4x3.
+3. **`macroshift_ml_engine.py` (Cérebro Preditivo):** Extrai os dados do DW, aplica o *Data Augmentation* (Bootstrapping), treina o `RandomForestRegressor`, emite o certificado de qualidade (Out-of-Time Validation) e roda os cenários 5x2 e 4x3.
 
 # 📊 MacroShift BR: Integração Sistêmica (ML + NLP) v8.0
 
@@ -70,43 +70,3 @@ Ao integrar um Risco Legislativo de **46.4%** (mapeado pelo NLP), o simulador de
 
 ---
 **Wilton Marques do Amaral** *Cientista de Dados | Especialista Legislativo*
-
-
----
-
-## ⚙️ Como Executar (Quickstart)
-
-### 1. Configuração do Banco de Dados
-Crie um arquivo `db_config.json` na raiz do projeto com as credenciais do seu PostgreSQL local:
-```json
-{
-    "host": "localhost",
-    "port": "5432",
-    "user": "seu_usuario",
-    "password": "sua_senha"
-}
-
-Em seguida, inicialize a infraestrutura:
-
-Bash
-python setup_macroshift_db.py
-2. Ingestão de Dados (ETL)
-Extraia os dados consolidados do IBGE:
-
-Bash
-python macroshift_data_ingestion.py --ibge
-Faça o download e processamento de Big Data do Novo CAGED (ex: Dezembro de 2023):
-
-Bash
-python macroshift_data_ingestion.py --caged --ano 2023 --mes 12
-3. Simulação e Machine Learning
-Execute o motor preditivo para visualizar o impacto do choque de jornada na economia:
-
-Bash
-python macroshift_ml_engine.py
-Autor: Wilton Marques do Amaral
-
-Desenvolvido como caso de estudo prático unindo Engenharia de Dados, Economia e Inteligência Artificial.
-
-
-
