@@ -30,18 +30,47 @@ Construir um simulador econômico não é apenas plugar dados em uma biblioteca.
 ### 🟢 Fase 4: A Âncora Causal e o Domínio Determinístico (R²: 0.997)
 * **O Ajuste Final:** Realizamos um *Feature Selection* e injetamos o `salario_base_setorial` explicitamente no treino, permitindo árvores mais profundas (`max_depth=15`).
 * **O Veredito do Gêmeo Digital:** O R² atingiu **99,7%** com um Erro Absoluto Médio (MAE) de apenas R$ 1,32. 
-> 💡 **Nota Técnica:** Em Machine Learning clássico, 99.7% indicaria *Data Leakage*. No entanto, em um **Motor de Simulação (Digital Twin)**, esse é o estado da arte. Isso prova que o modelo fez engenharia reversa perfeita das leis causais de produtividade que embutimos. Ele não "alucina"; age de forma estritamente determinística, aplicando as regras econômicas com precisão matemática para projetar as vagas.
+### 💡 **Nota Técnica:** Em Machine Learning clássico, 99.7% indicaria *Data Leakage*. No entanto, em um **Motor de Simulação (Digital Twin)**, esse é o estado da arte. Isso prova que o modelo fez engenharia reversa perfeita das leis causais de produtividade que embutimos. Ele não "alucina"; age de forma estritamente determinística, aplicando as regras econômicas com precisão matemática para projetar as vagas.
 
 ---
 
-## 🛠️ Arquitetura do Sistema
+### 🛠️ Arquitetura do Sistema
 
-O projeto é modular e dividido em três camadas principais:
+## O projeto é modular e dividido em três camadas principais:
 
-1. **`setup_macroshift_db.py` (Infraestrutura):** Cria o Data Warehouse `macro_shift_br_db` no PostgreSQL e as tabelas `tb_macro_ibge` e `tb_micro_caged`.
-2. **`macroshift_data_ingestion.py` (ETL de Big Data):** * **IBGE:** Consome a API do SIDRA via REST, normaliza as chaves temporais e cruza métricas de horas e renda.
+# 1. **`setup_macroshift_db.py` (Infraestrutura):** Cria o Data Warehouse `macro_shift_br_db` no PostgreSQL e as tabelas `tb_macro_ibge` e `tb_micro_caged`.
+# 2. **`macroshift_data_ingestion.py` (ETL de Big Data):** * **IBGE:** Consome a API do SIDRA via REST, normaliza as chaves temporais e cruza métricas de horas e renda.
    * **CAGED:** Acessa o FTP do Governo Federal, faz download e descompactação de arquivos `.7z` massivos na memória e aplica a técnica de *Chunking* (100k linhas por lote) no Pandas para não estourar a memória RAM.
-3. **`macroshift_ml_engine.py` (Cérebro Preditivo):** Extrai os dados do DW, aplica o *Data Augmentation* (Bootstrapping), treina o `RandomForestRegressor`, emite o certificado de qualidade (Out-of-Time Validation) e roda os cenários 5x2 e 4x3.
+# 3. **`macroshift_ml_engine.py` (Cérebro Preditivo):** Extrai os dados do DW, aplica o *Data Augmentation* (Bootstrapping), treina o `RandomForestRegressor`, emite o certificado de qualidade (Out-of-Time Validation) e roda os cenários 5x2 e 4x3.
+
+# 📊 MacroShift BR: Integração Sistêmica (ML + NLP) v8.0
+
+O **MacroShift BR** evoluiu de um simulador de jornada para um ecossistema de inteligência legislativa e econômica. Esta versão marca a integração do **Motor Preditivo (Random Forest)** com o **Radar de Similaridade por Cosseno (NLP)**.
+
+## 🧠 Arquitetura de Integração: O "Efeito Tesoura"
+
+A versão 8.0 introduz o conceito de **Risco Regulatório Dinâmico**. O sistema agora opera em duas frentes síncronas:
+
+1. **Camada de Percepção (NLP Radar):** - Realiza o *scraping* e enriquecimento em massa de projetos de lei via API da Câmara.
+   - Utiliza **TF-IDF Vectorization** e **Cosine Similarity** para identificar ameaças tributárias à tecnologia (ex: PL 2067/2026).
+   - Gera um `Macro-Score` (0-100) de pressão legislativa sobre a automação.
+
+2. **Camada de Projeção (ML Engine):**
+   - Executa uma **Random Forest Regressor** (V8.0) com 300 estimadores e profundidade 15.
+   - Recebe o `Macro-Score` como um parâmetro de entrada que atua como um multiplicador negativo sobre a variável `investimento_tec`.
+   - Simula o impacto real nas vagas, considerando que a automação pode ser tributada, reduzindo seu poder de absorção de choque.
+
+## 🛠️ Novos Scripts Incluídos
+- `macroshift_nlp_radar.py`: O "cérebro" léxico focado em pautas laborais e automação.
+- `macroshift_ml_engine.py (v8.0)`: O motor financeiro atualizado com o gatilho de risco regulatório.
+- `ingestao_camara.py (v4.0)`: Pipeline de Big Data otimizado para varredura histórica (2024-2026).
+
+## 📈 Resultados Obtidos
+Ao integrar um Risco Legislativo de **46.4%** (mapeado pelo NLP), o simulador detectou que setores altamente dependentes de tecnologia para compensar a escala 4x3 sofrerão um aumento de **12% a 18%** na necessidade de contratação imprevista, devido à neutralização do "escudo tecnológico" por novas cargas tributárias.
+
+---
+**Wilton Marques do Amaral** *Cientista de Dados | Especialista Legislativo*
+
 
 ---
 
@@ -75,36 +104,9 @@ Execute o motor preditivo para visualizar o impacto do choque de jornada na econ
 
 Bash
 python macroshift_ml_engine.py
-
-
-
-# 📊 MacroShift BR: Integração Sistêmica (ML + NLP) v8.0
-
-O **MacroShift BR** evoluiu de um simulador de jornada para um ecossistema de inteligência legislativa e econômica. Esta versão marca a integração do **Motor Preditivo (Random Forest)** com o **Radar de Similaridade por Cosseno (NLP)**.
-
-## 🧠 Arquitetura de Integração: O "Efeito Tesoura"
-
-A versão 8.0 introduz o conceito de **Risco Regulatório Dinâmico**. O sistema agora opera em duas frentes síncronas:
-
-1. **Camada de Percepção (NLP Radar):** - Realiza o *scraping* e enriquecimento em massa de projetos de lei via API da Câmara.
-   - Utiliza **TF-IDF Vectorization** e **Cosine Similarity** para identificar ameaças tributárias à tecnologia (ex: PL 2067/2026).
-   - Gera um `Macro-Score` (0-100) de pressão legislativa sobre a automação.
-
-2. **Camada de Projeção (ML Engine):**
-   - Executa uma **Random Forest Regressor** (V8.0) com 300 estimadores e profundidade 15.
-   - Recebe o `Macro-Score` como um parâmetro de entrada que atua como um multiplicador negativo sobre a variável `investimento_tec`.
-   - Simula o impacto real nas vagas, considerando que a automação pode ser tributada, reduzindo seu poder de absorção de choque.
-
-## 🛠️ Novos Scripts Incluídos
-- `macroshift_nlp_radar.py`: O "cérebro" léxico focado em pautas laborais e automação.
-- `macroshift_ml_engine.py (v8.0)`: O motor financeiro atualizado com o gatilho de risco regulatório.
-- `ingestao_camara.py (v4.0)`: Pipeline de Big Data otimizado para varredura histórica (2024-2026).
-
-## 📈 Resultados Obtidos
-Ao integrar um Risco Legislativo de **46.4%** (mapeado pelo NLP), o simulador detectou que setores altamente dependentes de tecnologia para compensar a escala 4x3 sofrerão um aumento de **12% a 18%** na necessidade de contratação imprevista, devido à neutralização do "escudo tecnológico" por novas cargas tributárias.
-
----
-**Wilton Marques do Amaral** *Cientista de Dados | Especialista Legislativo*
 Autor: Wilton Marques do Amaral
 
 Desenvolvido como caso de estudo prático unindo Engenharia de Dados, Economia e Inteligência Artificial.
+
+
+
